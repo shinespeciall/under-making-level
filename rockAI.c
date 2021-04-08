@@ -7,7 +7,7 @@
 /**Changelog:
  * 1.0
  * Add basic logic and test the patch
- * /
+ */
 
 /* Hook String:
 @HookString P
@@ -16,6 +16,7 @@
 #define Tbuf (*(volatile unsigned char*) 0x03000A24)
 #define iGmTimeFrame (*(volatile unsigned int*) 0x03000BEC)
 #define Terrain_usKoka_SolidOrWater (*(volatile unsigned short*) 0x030000A2)
+#define ucEnemyBrokenFlag (*(volatile unsigned char*) 0x03000028)
 
 // rock functions
 #define Q_INITIAL_zako_iwa ((int (*)()) 0x803E55F)
@@ -85,10 +86,10 @@ void CustomRockAI()
     char *v4;
     int v5;
     unsigned char v6;
-
-    if ( Tbuf & 0x800 && iGmTimeFrame & 3 )
+    
+    if ( *(unsigned short *)(&Tbuf) & 0x800 && iGmTimeFrame & 3 )
         return;
-    v0 = *((unsigned char *)&Tbuf + 28);
+    v0 = *(&Tbuf + 28);
     switch ( v0 )
     {
     case 0:
@@ -239,7 +240,7 @@ void CustomRockAI()
         LF_MOVE_L_com();
         goto LABEL_70;
     case 89:
-        *((unsigned char *)&Tbuf + 28) = 90;
+        *(&Tbuf + 28) = 90;
         goto LABEL_43;
     case 90:
     LABEL_43:
@@ -247,7 +248,7 @@ void CustomRockAI()
         NAGE_L_com();
         goto LABEL_70;
     case 91:
-        *((unsigned char *)&Tbuf + 28) = 92;
+        *(&Tbuf + 28) = 92;
         goto LABEL_51;
     case 92:
     LABEL_51:
@@ -255,8 +256,8 @@ void CustomRockAI()
         NAGE_R_com();
         goto LABEL_70;
     case 93:
-        *((unsigned char *)&Tbuf + 28) = 94;
-        *((unsigned char *)&Tbuf + 29) = *((unsigned char *)&Tbuf + 29) & 0xF | 0x10;
+        *(&Tbuf + 28) = 94;
+        *(&Tbuf + 29) = *(&Tbuf + 29) & 0xF | 0x10;
         goto LABEL_45;
     case 94:
     LABEL_45:
@@ -264,8 +265,8 @@ void CustomRockAI()
         TNAGE_L_com();
         goto LABEL_70;
     case 95:
-        *((unsigned char *)&Tbuf + 28) = 96;
-        *((unsigned char *)&Tbuf + 29) = *((unsigned char *)&Tbuf + 29) & 0xF | 0x40;
+        *(&Tbuf + 28) = 96;
+        *(&Tbuf + 29) = *(&Tbuf + 29) & 0xF | 0x40;
         goto LABEL_53;
     case 96:
     LABEL_53:
@@ -273,7 +274,7 @@ void CustomRockAI()
         TNAGE_R_com();
         goto LABEL_70;
     case 97:
-        *((unsigned char *)&Tbuf + 28) = 98;
+        *(&Tbuf + 28) = 98;
         goto LABEL_47;
     case 98:
     LABEL_47:
@@ -281,7 +282,7 @@ void CustomRockAI()
         UNAGE_L_com();
         goto LABEL_70;
     case 99:
-        *((unsigned char *)&Tbuf + 28) = 100;
+        *(&Tbuf + 28) = 100;
         goto LABEL_55;
     case 100:
     LABEL_55:
@@ -289,8 +290,8 @@ void CustomRockAI()
         UNAGE_R_com();
         goto LABEL_70;
     case 101:
-        *((unsigned char *)&Tbuf + 28) = 102;
-        *((unsigned char *)&Tbuf + 29) = *((unsigned char *)&Tbuf + 29) & 0xF | 0x20;
+        *(&Tbuf + 28) = 102;
+        *(&Tbuf + 29) = *(&Tbuf + 29) & 0xF | 0x20;
         goto LABEL_49;
     case 102:
     LABEL_49:
@@ -298,8 +299,8 @@ void CustomRockAI()
         UTNAGE_L_com();
         goto LABEL_70;
     case 103:
-        *((unsigned char *)&Tbuf + 28) = 104;
-        *((unsigned char *)&Tbuf + 29) = *((unsigned char *)&Tbuf + 29) & 0xF | 0x80;
+        *(&Tbuf + 28) = 104;
+        *(&Tbuf + 29) = *(&Tbuf + 29) & 0xF | 0x80;
         goto LABEL_57;
     case 104:
     LABEL_57:
@@ -307,10 +308,10 @@ void CustomRockAI()
         UTNAGE_R_com();
         goto LABEL_70;
     case 107:
-        v1 = *((unsigned char *)&Tbuf + 29);
-        if ( *((unsigned char *)&Tbuf + 29) & 0x10 )
+        v1 = *(&Tbuf + 29);
+        if ( *(&Tbuf + 29) & 0x10 )
         {
-            *((unsigned char *)&Tbuf + 29) = v1 & 0xF;
+            *(&Tbuf + 29) = v1 & 0xF;
             v2 = (char *)&Tbuf + 41;
             v3 = 8;
     LABEL_67:
@@ -318,9 +319,9 @@ void CustomRockAI()
             Q_NH_RAKKA_R_com();
             goto LABEL_70;
         }
-        if ( *((unsigned char *)&Tbuf + 29) & 0x20 )
+        if ( *(&Tbuf + 29) & 0x20 )
         {
-            *((unsigned char *)&Tbuf + 29) = v1 & 0xF;
+            *(&Tbuf + 29) = v1 & 0xF;
             v4 = (char *)&Tbuf + 41;
             v5 = 4;
     LABEL_64:
@@ -328,28 +329,28 @@ void CustomRockAI()
             Q_NH_RAKKA_L_com();
             goto LABEL_70;
         }
-        if ( *((unsigned char *)&Tbuf + 29) & 0x40 )
+        if ( *(&Tbuf + 29) & 0x40 )
         {
-            *((unsigned char *)&Tbuf + 29) = v1 & 0xF;
+            *(&Tbuf + 29) = v1 & 0xF;
             v4 = (char *)&Tbuf + 41;
             v5 = 8;
             goto LABEL_64;
         }
-        if ( *((unsigned char *)&Tbuf + 29) & 0x80 )
+        if ( *(&Tbuf + 29) & 0x80 )
         {
-            *((unsigned char *)&Tbuf + 29) = v1 & 0xF;
+            *(&Tbuf + 29) = v1 & 0xF;
             v2 = (char *)&Tbuf + 41;
             v3 = 4;
             goto LABEL_67;
         }
         Q_SOKUSI_com();
     LABEL_70:
-        v6 = *((unsigned char *)&Tbuf + 29);
+        v6 = *(&Tbuf + 29);
         if ( (v6 & 0xF) == 1 )
         {
-            if ( Tbuf & 0x800 )
+            if ( *(unsigned short *)(&Tbuf) & 0x800 )
             {
-                *((unsigned char *)&Tbuf + 29) = v6 + 1;
+                *(&Tbuf + 29) = v6 + 1;
                 TOptObjSet(*((unsigned short *)&Tbuf + 4), *((unsigned short *)&Tbuf + 5), 7);
                 m4aSongNumStart(61);
             }
@@ -358,9 +359,9 @@ void CustomRockAI()
         {
             T_NoHoseiBgAtari(*((unsigned short *)&Tbuf + 4), *((unsigned short *)&Tbuf + 5));
             if ( Terrain_usKoka_SolidOrWater == 1 )
-                Tbuf |= 0x800u;
-            if ( !(Tbuf & 0x800) )
-                --*((unsigned char *)&Tbuf + 29);
+                *(unsigned short *)(&Tbuf) |= 0x800u;
+            if ( !(*(unsigned short *)(&Tbuf) & 0x800) )
+                --*(&Tbuf + 29);
         }
         return;
     default:
