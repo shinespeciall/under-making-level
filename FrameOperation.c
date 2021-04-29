@@ -2,8 +2,6 @@
 // @HookAddress 0x6C75E
 // Mode: Thumb
 // Made by Goldensunboy, ssp(shinespeciall)
-// Verison 1
-// P.S. I make changes to the code frequently, so the version is only some kind of release number record -- ssp
 
 /* Hook details
 ------------------------- this only works when the new function push lr at first and bx lr at last.
