@@ -488,7 +488,7 @@ void FrameOperations()
         case J_SWITCH: // will fall down from the edge of the conveyer belt
         case ZAKO_IWA:
         case ZAKO_TUMIKI_3:
-        case ZAKO_TUMIKI_4:
+        // case ZAKO_TUMIKI_4: // this cannot work correctly without extra patch on Sub_8043138_EntityAI_0x45_Tmain_zako_tumiki_4
         case ZAKO_TUMIKI_0:
         case ZAKO_PINBALL_BALL:
         {
