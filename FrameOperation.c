@@ -359,7 +359,12 @@ struct ENTITY_REC {
     unsigned char EntityID;
     char PAD2[0xD];
     unsigned char HitboxX0;
-    char PAD3[6];
+    unsigned char HitboxX1;
+    unsigned char Cpadding; // possible wrong order
+    unsigned char TWork0;
+    unsigned char TWork1;
+    unsigned char TWork2;
+    unsigned char TWork3;
 };
 
 #define ENTITIES ((volatile struct ENTITY_REC*) 0x03000104)
@@ -386,10 +391,13 @@ struct ENTITY_REC {
 #define Layer2_DecompressedDataPointer (*(volatile unsigned int*) 0x3000064)
 #define Layer2_Width (*(volatile unsigned short*) 0x3000068)
 #define Layer2_Height (*(volatile unsigned short*) 0x300006A)
-#define CurrentTileset_EventIdTablePointer (*(volatile unsigned int*) 0x30031FC)
 #define CurrentRoomHeader_Layer0MappingType (*(volatile unsigned char*) 0x3000075)
+#define CurrentTileset_TerrainTypeTablePointer (*(volatile unsigned int*) 0x30031F8)
+#define CurrentTileset_EventIdTablePointer (*(volatile unsigned int*) 0x30031FC)
+
 
 #define myflag_Iscounting (*(volatile unsigned char*) 0x30000E6)
+#define myflag_conveyingWario (*(volatile unsigned char*) 0x30000E6)
 
 #define cGmStartFlg (*(volatile unsigned char*) 0x3000C3F)
 #define cPauseFlag (*(volatile unsigned char*) 0x3000C35)
@@ -406,6 +414,7 @@ void FrameOperations()
     }
 
     // Customized code (including everything below)
+    myflag_conveyingWario = 0; // init
 
     // Process all active entities
     for(int i = 0; i < 24; ++i)
@@ -427,7 +436,7 @@ void FrameOperations()
 
         // TODO -----------------------------
         int enemy_bottom_X = (ENTITIES[i].XPos << 16) >> 22;
-        int enemy_bottom_XL = ((ENTITIES[i].XPos - ENTITIES[i].HitboxX0) << 16) >> 22;
+        int enemy_bottom_XL = ((ENTITIES[i].XPos - ENTITIES[i].HitboxX1) << 16) >> 22;
         int enemy_bottom_XR = ((ENTITIES[i].XPos + ENTITIES[i].HitboxX0) << 16) >> 22;
         int enemy_bottom_Y = (ENTITIES[i].YPos << 16) >> 22;
         int eventtileId = *(unsigned short*)(2 * \
@@ -446,6 +455,22 @@ void FrameOperations()
                                 *(unsigned short*)(2 * (enemy_bottom_Y * Layer1_Width + (enemy_bottom_XL)) + \
                                 Layer1_DecompressedDataPointer) + \
                                 CurrentTileset_EventIdTablePointer);
+        int tileterrainId_itemL = *(unsigned short*)(2 * \
+                                *(unsigned short*)(2 * ((enemy_bottom_Y - 1) * Layer1_Width + (enemy_bottom_XL)) + \
+                                Layer1_DecompressedDataPointer) + \
+                                CurrentTileset_TerrainTypeTablePointer);
+        int tileterrainId_itemL2 = *(unsigned short*)(2 * \
+                                *(unsigned short*)(2 * ((enemy_bottom_Y - 2) * Layer1_Width + (enemy_bottom_XL)) + \
+                                Layer1_DecompressedDataPointer) + \
+                                CurrentTileset_TerrainTypeTablePointer);
+        int tileterrainId_itemR = *(unsigned short*)(2 * \
+                                *(unsigned short*)(2 * ((enemy_bottom_Y - 1) * Layer1_Width + (enemy_bottom_XR)) + \
+                                Layer1_DecompressedDataPointer) + \
+                                CurrentTileset_TerrainTypeTablePointer);
+        int tileterrainId_itemR2 = *(unsigned short*)(2 * \
+                                *(unsigned short*)(2 * ((enemy_bottom_Y - 2) * Layer1_Width + (enemy_bottom_XR)) + \
+                                Layer1_DecompressedDataPointer) + \
+                                CurrentTileset_TerrainTypeTablePointer);
         switch (ENTITIES[i].EntityID)
         {
         case ZAKO_MEN_YARI: // won't fall down from the edge of the conveyer belt
@@ -488,17 +513,34 @@ void FrameOperations()
         case J_SWITCH: // will fall down from the edge of the conveyer belt
         case ZAKO_IWA:
         case ZAKO_TUMIKI_3:
-        // case ZAKO_TUMIKI_4: // this cannot work correctly without extra patch on Sub_8043138_EntityAI_0x45_Tmain_zako_tumiki_4
+        case ZAKO_TUMIKI_4: // this cannot work correctly without extra patch on Sub_8043138_EntityAI_0x45_Tmain_zako_tumiki_4
         case ZAKO_TUMIKI_0:
         case ZAKO_PINBALL_BALL:
+        case FURAWANA_UEKIBACHI:
         {
             if (eventtileId_itemL == 0x6A) // conveyer push things to the left side
             {
-                ENTITIES[i].XPos -= 2;
+                if (tileterrainId_itemL == 0 && tileterrainId_itemL2 == 0)
+                {
+                    ENTITIES[i].XPos -= 4;
+                    if (ENTITIES[i].TWork0 == 2 && !myflag_conveyingWario) // wario standing atop enemy
+                    {
+                        WarioXPos -= 4;
+                        myflag_conveyingWario = 1;
+                    }
+                }
             }
             else if (eventtileId_itemR == 0x6B) // conveyer push things to the right side
             {
-                ENTITIES[i].XPos += 2;
+                if (tileterrainId_itemR == 0 && tileterrainId_itemR2 == 0)
+                {
+                    ENTITIES[i].XPos += 4;
+                    if (ENTITIES[i].TWork0 == 2 && !myflag_conveyingWario) // wario standing atop enemy
+                    {
+                        WarioXPos -= 4;
+                        myflag_conveyingWario = 1;
+                    }
+                }
             }
             break;
         }
