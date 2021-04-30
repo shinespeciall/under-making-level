@@ -279,123 +279,117 @@ struct ENEMY_DATA {
 
 void Rewritten_Sub_8043138_EntityAI_0x45_Tmain_zako_tumiki_4()
 {
-	// keep most of the code untouched, only comment out the tile16 putting and removing functions
-	// and change the CurEnemy_GuardAndDamageParam
-    unsigned char tmp_ucThit1 = 0, tmp_ucThit2 = 0;
-	short v0, v0_1, v0_2, v1, v2;
-	
-    if ( CurrentEnemyData.CurEnemy_CurrentAnimationId == K0_WALK )
+	// Rewrite the whole function using switch case
+    // Remove tile16 putting and removing functions
+	// Change the CurEnemy_GuardAndDamageParam
+    // better drop checking logic
+    switch (CurrentEnemyData.CurEnemy_CurrentAnimationId)
     {
-LABEL_9:
-    // CurrentEnemyData.CurEnemy_DisableInteractionWithWarioCountdown = 1; // should not be disabled
-  	Sub_8023B88_T_DivaBellyAttactCheck();
-  	if ( !ucThit1 )
-	{
-		if ( (CurrentEnemyData.CurEnemy_usStatus & 0x40) != 0 )
-			Sub_8023BFC_T_NoCorrectionBgAttack( \
-				CurrentEnemyData.CurEnemy_YPos, \
-				CurrentEnemyData.CurEnemy_XPos - CurrentEnemyData.CurEnemy_HitboxX0);
-		else
-			Sub_8023BFC_T_NoCorrectionBgAttack( \
-				CurrentEnemyData.CurEnemy_YPos, \
-				CurrentEnemyData.CurEnemy_XPos + CurrentEnemyData.CurEnemy_HitboxX1);
-		if ( !ucThit2 )
-			CurrentEnemyData.CurEnemy_CurrentAnimationId = Q_N_RAKKA_V;
-	}
-    goto LABEL_13;
-    }
-    if ( CurrentEnemyData.CurEnemy_CurrentAnimationId <= 0x10u )
-    {
-		if ( CurrentEnemyData.CurEnemy_CurrentAnimationId )
-		{
-LABEL_12:
-			CurrentEnemyData.CurEnemy_CurrentAnimationId = K0_WALK;
+        case Q_INITIAL:
+        {
+            CurrentEnemyData.CurEnemy_XPos += 32;
+            CurrentEnemyData.CurEnemy_usStatus |= /*0x8020u*/ 0x408u;
+            CurrentEnemyData.CurEnemy_Prio = 1;
+            CurrentEnemyData.CurEnemy_SizeY0_Bottom = 32;
+            CurrentEnemyData.CurEnemy_SizeY1_Top = 0;
+            CurrentEnemyData.CurEnemy_SizeX_LeftRight = 16;
+            CurrentEnemyData.CurEnemy_HitboxY0 = 120;
+            CurrentEnemyData.CurEnemy_HitboxY1 = 0;
+            CurrentEnemyData.CurEnemy_HitboxX0 = 64;
+            CurrentEnemyData.CurEnemy_HitboxX1 = 60;
+            CurrentEnemyData.OAMDataPackPointerForCurrentAnimation = 0x83C799C;
+            CurrentEnemyData.CurEnemy_RealFrameCountForCurrentAnimationFrame = 0;
+            CurrentEnemyData.CurEnemy_CurrentAnimationFrameId = 0;
+            CurrentEnemyData.CurEnemy_GuardAndDamageParam = /*TUMIKI_4_H*/ NORU_HAKO_NH; // changed the type
+            /**NORU_HAKO, // wario will bounce away on the side of the enemy, can walk atop
+             * NORU_HAKO2, // same with NORU_HAKO
+             * NORU_HAKO_NH,
+             * NORU_HAKO2_NH, // 2 same
+             * NORU_YUKA_1,
+             * NORU_YUKA_1ND,
+             * NORU_YUKA_1A,
+             */
+            CurrentEnemyData.CurEnemy_CurrentAnimationId = 16;
+            CurrentEnemyData.CurEnemy_TWork0 = 0;
+        } // fall through
+        case K0_WALK:
+        {
+            Sub_8023B88_T_DivaBellyAttactCheck();
+            if ( !ucThit1 )
+            {
+                if ( (CurrentEnemyData.CurEnemy_usStatus & 0x40) != 0 )
+                    Sub_8023BFC_T_NoCorrectionBgAttack( \
+                        CurrentEnemyData.CurEnemy_YPos, \
+                        CurrentEnemyData.CurEnemy_XPos - CurrentEnemyData.CurEnemy_HitboxX0);
+                else
+                    Sub_8023BFC_T_NoCorrectionBgAttack( \
+                        CurrentEnemyData.CurEnemy_YPos, \
+                        CurrentEnemyData.CurEnemy_XPos + CurrentEnemyData.CurEnemy_HitboxX1);
+                if ( !ucThit2 )
+                    CurrentEnemyData.CurEnemy_CurrentAnimationId = Q_N_RAKKA_V;
+            }
+            break;
+        }
+        case Q_N_RAKKA_V:
+        {
+            CurrentEnemyData.CurEnemy_CurrentAnimationId = H_RAKKA_V;
+		    CurrentEnemyData.CurEnemy_TWork2 = 0;
+        } // fall through
+        case H_RAKKA_V:
+        {
+            Sub_8042D70_Tumiki_4_Rakka_AtariCheck();
+            Wario_ucTumiki = 0;
+            if ( CurrentEnemyData.CurEnemy_TWork2 == 255 )
+            {
+                CurrentEnemyData.CurEnemy_TWork2 = 0;
+                Wario_ucTumiki = 1;
+            }
+            else
+            {
+	            short v0, v0_1, v0_2, v1, v2;
+                v0_2 = v0 = Sub_8023A60_DropCorrectedBgAttact(CurrentEnemyData.CurEnemy_YPos, CurrentEnemyData.CurEnemy_XPos);
+                unsigned char tmp_ucThit1 = ucThit1; // in case ucThit1 data got wiped on the second run of Sub_8023A60_DropCorrectedBgAttact
+                v0_1 = Sub_8023A60_DropCorrectedBgAttact(CurrentEnemyData.CurEnemy_YPos, CurrentEnemyData.CurEnemy_XPos + 64);
+                unsigned char tmp_ucThit2 = ucThit1;
+                if ((CurrentEnemyData.CurEnemy_XPos - CurrentEnemyData.CurEnemy_HitboxX1) & 63)
+                    v0_2 = Sub_8023A60_DropCorrectedBgAttact(CurrentEnemyData.CurEnemy_YPos, CurrentEnemyData.CurEnemy_XPos - 64);
+                
+                if (!ucThit1) ucThit1 = (!tmp_ucThit1) ? tmp_ucThit2 : tmp_ucThit1;
+                if ( Terrain_usKoka_SolidOrWater == /*YK_MIZU*/ 1 )
+                {
+                    CurrentEnemyData.CurEnemy_usStatus |= 0x800u;
+                    Sub_8001DA4_m4aSongNumStart(/*S_TEKI_WATER_IN*/ 0x3D);
+                }
+                if ( ucThit1 )
+                {
+                    short tmp_min = (v0 >= v0_1) ? v0_1 : v0;
+                    CurrentEnemyData.CurEnemy_YPos = (tmp_min >= v0_2) ? v0_2 : tmp_min;
+                    CurrentEnemyData.CurEnemy_CurrentAnimationId = K0_WALK;
+                    Sub_8001DA4_m4aSongNumStart(/*S_BLOCK_BOUND*/ 0xF9);
+                }
+                else
+                {
+                    v1 = word_83C7A6C[CurrentEnemyData.CurEnemy_TWork2];
+                    if ( v1 == 0x7FFF )
+                    {
+                        v2 = CurrentEnemyData.CurEnemy_YPos + word_83C7A6C[CurrentEnemyData.CurEnemy_TWork2 - 1];
+                    }
+                    else
+                    {
+                        ++CurrentEnemyData.CurEnemy_TWork2;
+                        v2 = CurrentEnemyData.CurEnemy_YPos + v1;
+                    }
+                CurrentEnemyData.CurEnemy_YPos = v2;
+                }
+            }
+            break;
+        }
+        default:
+        {
+            CurrentEnemyData.CurEnemy_CurrentAnimationId = K0_WALK;
 			CurrentEnemyData.CurEnemy_usStatus &= 0xFCFFu;
-			goto LABEL_13;
-		}
-		CurrentEnemyData.CurEnemy_XPos += 32;
-		CurrentEnemyData.CurEnemy_usStatus |= /*0x8020u*/ 0x408u;
-		CurrentEnemyData.CurEnemy_Prio = 1;
-		CurrentEnemyData.CurEnemy_SizeY0_Bottom = 32;
-		CurrentEnemyData.CurEnemy_SizeY1_Top = 0;
-		CurrentEnemyData.CurEnemy_SizeX_LeftRight = 16;
-		CurrentEnemyData.CurEnemy_HitboxY0 = 120;
-		CurrentEnemyData.CurEnemy_HitboxY1 = 0;
-		CurrentEnemyData.CurEnemy_HitboxX0 = 64;
-		CurrentEnemyData.CurEnemy_HitboxX1 = 60;
-		CurrentEnemyData.OAMDataPackPointerForCurrentAnimation = 0x83C799C;
-		CurrentEnemyData.CurEnemy_RealFrameCountForCurrentAnimationFrame = 0;
-		CurrentEnemyData.CurEnemy_CurrentAnimationFrameId = 0;
-		CurrentEnemyData.CurEnemy_GuardAndDamageParam = /*TUMIKI_4_H*/ NORU_HAKO_NH; // changed the type
-        /**NORU_HAKO, // wario will bounce away on the side of the enemy, can walk atop
-         * NORU_HAKO2, // same with NORU_HAKO
-         * NORU_HAKO_NH,
-         * NORU_HAKO2_NH, // 2 same
-         * NORU_YUKA_1,
-         * NORU_YUKA_1ND,
-         * NORU_YUKA_1A,
-         */
-		CurrentEnemyData.CurEnemy_CurrentAnimationId = 16;
-		CurrentEnemyData.CurEnemy_TWork0 = 0;
-		// Sub_8042F0C_HIT_RETURN_zako_tumiki_4(); // no need i think
-    goto LABEL_9;
+            break;
+        }
     }
-	if ( CurrentEnemyData.CurEnemy_CurrentAnimationId == Q_N_RAKKA_V )
-	{
-		// CurrentEnemyData.CurEnemy_DisableInteractionWithWarioCountdown = 1; // should not be disabled
-		CurrentEnemyData.CurEnemy_CurrentAnimationId = H_RAKKA_V;
-		CurrentEnemyData.CurEnemy_TWork2 = 0;
-		// Sub_8042E90_HIT_CLEAR_zako_tumiki_4(); // no need i think
-	}
-  	else if ( CurrentEnemyData.CurEnemy_CurrentAnimationId != H_RAKKA_V )
-	{
-		goto LABEL_12;
-	}
-  	Sub_8042D70_Tumiki_4_Rakka_AtariCheck();
-	Wario_ucTumiki = 0;
-	if ( CurrentEnemyData.CurEnemy_TWork2 == 255 )
-	{
-		CurrentEnemyData.CurEnemy_TWork2 = 0;
-		Wario_ucTumiki = 1;
-	}
-	else
-	{
-		v0_2 = v0 = Sub_8023A60_DropCorrectedBgAttact(CurrentEnemyData.CurEnemy_YPos, CurrentEnemyData.CurEnemy_XPos);
-        tmp_ucThit1 = ucThit1; // in case ucThit1 data got wiped on the second run of Sub_8023A60_DropCorrectedBgAttact
-        v0_1 = Sub_8023A60_DropCorrectedBgAttact(CurrentEnemyData.CurEnemy_YPos, CurrentEnemyData.CurEnemy_XPos + 64);
-        tmp_ucThit2 = ucThit1;
-        if ((CurrentEnemyData.CurEnemy_XPos - CurrentEnemyData.CurEnemy_HitboxX1) & 63)
-            v0_2 = Sub_8023A60_DropCorrectedBgAttact(CurrentEnemyData.CurEnemy_YPos, CurrentEnemyData.CurEnemy_XPos - 64);
-        
-        if (!ucThit1) ucThit1 = (!tmp_ucThit1) ? tmp_ucThit2 : tmp_ucThit1;
-		if ( Terrain_usKoka_SolidOrWater == /*YK_MIZU*/ 1 )
-		{
-			CurrentEnemyData.CurEnemy_usStatus |= 0x800u;
-			Sub_8001DA4_m4aSongNumStart(/*S_TEKI_WATER_IN*/ 0x3D);
-		}
-		if ( ucThit1 )
-		{
-            short tmp_min = (v0 >= v0_1) ? v0_1 : v0;
-			CurrentEnemyData.CurEnemy_YPos = (tmp_min >= v0_2) ? v0_2 : tmp_min;
-			CurrentEnemyData.CurEnemy_CurrentAnimationId = K0_WALK;
-			// Sub_8042F0C_HIT_RETURN_zako_tumiki_4(); // no need i think
-			Sub_8001DA4_m4aSongNumStart(/*S_BLOCK_BOUND*/ 0xF9);
-		}
-		else
-		{
-			v1 = word_83C7A6C[CurrentEnemyData.CurEnemy_TWork2];
-			if ( v1 == 0x7FFF )
-			{
-				v2 = CurrentEnemyData.CurEnemy_YPos + word_83C7A6C[CurrentEnemyData.CurEnemy_TWork2 - 1];
-			}
-			else
-			{
-				++CurrentEnemyData.CurEnemy_TWork2;
-				v2 = CurrentEnemyData.CurEnemy_YPos + v1;
-			}
-		CurrentEnemyData.CurEnemy_YPos = v2;
-		}
-	}
-LABEL_13:
-  	Sub_8026838_EnemyWanderingCom();
+    Sub_8026838_EnemyWanderingCom();
 }

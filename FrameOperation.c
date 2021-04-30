@@ -537,7 +537,7 @@ void FrameOperations()
                     ENTITIES[i].XPos += 4;
                     if (ENTITIES[i].TWork0 == 2 && !myflag_conveyingWario) // wario standing atop enemy
                     {
-                        WarioXPos -= 4;
+                        WarioXPos += 4;
                         myflag_conveyingWario = 1;
                     }
                 }
