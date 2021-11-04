@@ -5,6 +5,11 @@
 
 // Changelog:
 // v1.0 on 2021/10/26 by ssp
+// implement switch reset and enemy revive
+
+// v1.1 on 2021/11/4  by ssp
+// fix the switch reset be triggered when pause and unpause in game
+
 
 /** starts from 1B908, no alignment byte needed
  *  ends at 1B928 with a branch instruction to jump out
@@ -38,17 +43,22 @@
 // from 0x3000564 to 0x3000964
 #define EntityStateSlotInRoom ((volatile unsigned char*) 0x3000564)
 
+//OFF 0, ON 1, RETURN 2, RETIRE 3, SAVE 4
+#define cPauseFlag (*(volatile signed char*) 0x3000C35)
+
 #define Sub_8010438_GmDemoKey_Init ((void (*)()) 0x8010439)
 #define Sub_8010404_GmDemoKey_Auto2 ((int (*)()) 0x8010405)
 #define Sub_801C1C0_LoadNewRoom ((void (*)()) 0x801C1C1)
 
+// since some routine in Case3 in GameMain() will set sGameSeq = 0, so we need to skip those case(s)
 void GameMainCase0Hook()
 {
-    // custom code part 1, have to be in front of the vanilla code, or it cannot work on the first run
+    // custom code part 1, have to be in front of the vanilla code
+    // or EntityStateSlotInRoom reset cannot work on the first run
     // Enemies can revive when Wario goes into some Room(s) again
     // 0x3000964 - 0x3000564 = 0x400
     // Entry Passage - Level 0
-    if (!CurrentPassage && !CurrentLevel)
+    if (!CurrentPassage && !CurrentLevel && !cPauseFlag)
     {
         // Room 2
         if (CurrentRoom == 2)
@@ -65,15 +75,19 @@ void GameMainCase0Hook()
         }
     }
 
+    // custom code part 2. cPauseFlag will be reset to 0 in vanilla code
+    // have to be in front of the vanilla code
+    // toggle off the MapSw[1] and MapSw[2] every time when loading a new Room
+    if (!cPauseFlag)
+    {
+        MapSw[1] = 0;
+        MapSw[2] = 0;
+    }
+
     // Vanilla code
     if ( !cGmStartFlg )
         Sub_8010438_GmDemoKey_Init();
     if ( ucDemoSwitch[0] == 2 )
         Sub_8010404_GmDemoKey_Auto2();
     Sub_801C1C0_LoadNewRoom();
-
-    // custom code part 2
-    // toggle off the MapSw[1] and MapSw[2] every time when loading a new Room
-    MapSw[1] = 0;
-    MapSw[2] = 0;
 }
