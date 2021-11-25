@@ -381,6 +381,7 @@ struct ENTITY_REC {
 #define uknown_counter (*(volatile unsigned char*) 0x30018A2)
 #define word_30018CE (*(volatile unsigned short*) 0x30018CE)
 #define word_30018CC (*(volatile unsigned short*) 0x30018CC)
+#define usWarStopFlg (*(volatile unsigned short*) 0x30019F6)
 
 #define Layer0_DecompressedDataPointer (*(volatile unsigned int*) 0x3000054)
 #define Layer0_Width (*(volatile unsigned short*) 0x3000058)
@@ -581,7 +582,7 @@ void FrameOperations()
     // Press L to trigger Debug Mod
     if(cGmStartFlg == 1 && cPauseFlag == 0 && soft_reset == 0)
     {
-        if(ADDR_KEY_4 == 0x200)
+        if(ADDR_KEY_4 == 0x200 && !usWarStopFlg)
         {
             if(GameState == 8)
             {
