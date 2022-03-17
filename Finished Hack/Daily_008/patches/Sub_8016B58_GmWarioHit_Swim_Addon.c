@@ -37,8 +37,11 @@
 
 #define Sub_8001DA4_m4aSongNumStart ((void (*)(unsigned int)) 0x8001DA5)
 
+#define Sub_806D4C0_SetWarioAnimation_MapFieldAtari ((unsigned int (*)(unsigned short, unsigned short)) 0x806D4C1)
+
 // didn't double-check the ret and input variable types, directly parsed from IDA pro
 #define Sub_8015BA8_WarChngCheck ((signed int (*)(signed int)) 0x8015BA9)
+#define Sub_8012BAC_GmWarioChng ((void (*)(unsigned char)) 0x8012BAD)
 #define Sub_8016614_GmWarioChng_Swim ((void (*)(unsigned char)) 0x8016615)
 
 // globalId, RoomEnemySlotId, ChrOfs, us_YPos, us_XPos, usStatus
@@ -118,8 +121,17 @@ void Sub_8016B58_GmWarioHit_Swim_Addon()
     if ( (!(WHit.usMukiY & 0x80) || !(WHit.usMukiX & 0x80)) && Sub_806DAC0_PanelYakuAllNum_TileEventId(Wario_usPosY, Wario_usPosX) == YK_Nothing )
     {
         Wario_ucReact = 0;
-        Sub_8094E00_call_via_r1(0, 0x8012BAD);      // WarioChng_React[0]
-        Wario_ucStat = 4;
-        WarBk_ucStat = 4;
+        // Sub_8094E00_call_via_r1(0, 0x8012BAD);      // WarioChng_React[0]
+        unsigned int temp_result = Sub_806D4C0_SetWarioAnimation_MapFieldAtari(Wario_usPosY, Wario_usPosX);
+        if (temp_result == 0x1000001)
+        {
+            Sub_8012BAC_GmWarioChng(0);
+        }
+        else
+        {
+            Sub_8012BAC_GmWarioChng(4);
+        }
+        // Wario_ucStat = 4;
+        // WarBk_ucStat = 4;
     }
 }
