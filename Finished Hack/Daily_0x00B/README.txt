@@ -12,7 +12,6 @@ disable wario life decrease, by ssp
 fix wario stuck in some animation in the air, by ssp
 two new Enemy AI functions for throw ball stuff by ssp
 revive enemy when refresh room, by ssp
-run credit after save level, by ssp
 disable difficulty selecting, by ssp
 
 tools:
