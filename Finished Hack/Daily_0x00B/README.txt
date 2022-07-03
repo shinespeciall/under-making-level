@@ -31,4 +31,4 @@ AI generation stuff (everything runs on Google collab):
 Pixel Art Diffusion to generate background pic:
 https://github.com/KaliYuga-ai/Pixel-Art-Diffusion/blob/main/Pixel_Art_Diffusion_v2_01.ipynb
 music composer to generate bgm tracks:
-https://github.com/ai-forever/music-composer
+https://github.com/ai-forever/music-composer/blob/main/src/Music_Composer_Demo_Colab_en.ipynb
