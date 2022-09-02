@@ -23,6 +23,8 @@
  * directly modified from the IDA pro's generated C code.
  * add logic to asynchronize Layer 0 and Layer 3.
  *            ---- by ssp (shinespeciall), 2022/09/01
+ * add the example logic to update vram for moved layer.
+ *            ---- by ssp (shinespeciall), 2022/09/02
  */
 
 #define unk_300004C (*(volatile unsigned char*) 0x300004C) // some debug mode stuff
@@ -56,6 +58,9 @@
 #define Sub_806E904_DirectScrSet ((void (*)(int*)) 0x806E905)
 #define Sub_806EACC_Bg0_SP_ScrSet ((int (*)()) 0x806EACD)
 #define Sub_806EB78_GmScr_Bg0_AutoScroll ((int (*)()) 0x806EB79)
+
+// extra functions
+#define Sub_806BB4C_GmapBgVramInitSet ((void (*)(unsigned char bgnum)) 0x806BB4D)
 
 // debug rams
 #define unk_3000039 (*(volatile unsigned char*) 0x3000039)
@@ -115,6 +120,7 @@ int Sub_806E7F8_GmScrSet()
         {
             usBg2Vofs = usBg1Vofs_CameraYPos + 0x40;
         }
+        Sub_806BB4C_GmapBgVramInitSet(2); // call this function to update the layer 2 VRAM
 
         // Press L to Debug asyn layers
         if(cGmStartFlg == 1 && cPauseFlag == 0 && soft_reset == 0)
