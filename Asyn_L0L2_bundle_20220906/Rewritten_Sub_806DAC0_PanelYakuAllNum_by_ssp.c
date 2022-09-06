@@ -242,7 +242,7 @@ ProcessLayer0EventId:
             int X_value_R6_L0 = ((X_value + delta_L1_to_L0_X) << 16) >> 22;
             int Y_value_R6_L0 = ((Y_value + delta_L1_to_L0_Y) << 16) >> 22;
             Layer0CurrentEventId = CurrentTileset_EventIdTablePointer[ \
-                  Layer0_DecompressedDataPointer[(Y_value_R6 + Y_value_R6_L0) * Layer0_Width + (X_value_R6 + X_value_R6_L0)]];
+                  Layer0_DecompressedDataPointer[(Y_value_R6_L0) * Layer0_Width + (X_value_R6_L0)]];
             // if tile in layer 0 is water or currents
             if ( (Layer0CurrentEventId - 0x4C) <= 0xC && (Layer0CurrentEventId - 0x4C) >= 0)
             {
