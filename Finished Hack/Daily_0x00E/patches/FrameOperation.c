@@ -348,9 +348,6 @@ const unsigned char FontPal[32] __attribute__((aligned(4)))=
     0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 };
 
-// vanilla frame operation stuff
-#define sub_806E08C ((void (*)()) 0x806E08D)
-
 // Room warp stuff
 struct EnemyDataStructure {
     unsigned short CurEnemy_usStatus;
@@ -482,7 +479,7 @@ const unsigned char room_3_text[] = "okay, hold right and up, or left and up to 
 const unsigned char room_5_text[] = "I want to say that, you can break a hard breakable block from below when you are on a carpet. Hmmm, "
                                     "you want to say this is not the hint you want and you dont know how to get rid of the carpet in snow wario stats... "
                                     "okay, the hint is land on the ground first then move...";
-const unsigned char room_6_text[] = "All the R block will revive when you refresh the level.";
+const unsigned char room_6_text[] = "All the R block will revive when you refresh this Room.";
 const unsigned char room_8_text[] = "Question 1: why zombie wario will become fluid.         "
                                     "Quesrion 2: why you spend time reading these while the timer is still flying.";
 const unsigned int Room_texts[] = {debug_room_text, room_1_text, nothing_here, room_3_text, nothing_here, room_5_text, room_6_text, 
@@ -731,6 +728,9 @@ void layer_priority_changes()
         }
     }
 }
+
+// vanilla frame operation stuff
+#define sub_806E08C ((void (*)()) 0x806E08D)
 
 #define Sub_8012BAC_GmWarioChng ((void (*)(unsigned char)) 0x8012BAD)
 #define Sub_806DF3C_PanelPartWork_ReBlock_operate ((void (*)(unsigned char)) 0x806DF3D)
