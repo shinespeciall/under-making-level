@@ -1,0 +1,1 @@
+this is a newer version of the LogoOverwrite_20220927 bundles, which needs the "C_dependency" patch type feature support in WL4Editor. the files are directly modified from my Daily 0x00D.
