@@ -36,7 +36,7 @@ int Sub_806F524_EnemyPanel_Attack(unsigned short y_grid_pos, unsigned short x_gr
 
     pDestroy.xp = x_grid_pos;
     pDestroy.yp = y_grid_pos;
-    pDestroy.part = *(unsigned short*)((2 * L1_tile_ID & 0x1FFFF) + CurrentTileset_EventIdTablePointer);
+    pDestroy.part = CurrentTileset_EventIdTablePointer[Layer1_DecompressedDataPointer[pDestroy.yp * Layer1_Width + pDestroy.xp]];
     pDestroy.dir = 4;
     pDestroy.coin = 0;
     pDestroy.obop = 0;

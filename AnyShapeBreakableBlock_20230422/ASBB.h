@@ -384,7 +384,7 @@ enum {
 
 #define CurrentTileset_EventIdTablePointer (*(volatile unsigned short**) 0x30031FC)
 
-#define Layer0_DecompressedDataPointer (*(volatile unsigned int*) 0x3000054)
+#define Layer0_DecompressedDataPointer (*(volatile unsigned short**) 0x3000054)
 #define Layer0_Width (*(volatile unsigned short*) 0x3000058)
 #define Layer0_Height (*(volatile unsigned short*) 0x300005a)
 
@@ -392,7 +392,7 @@ enum {
 #define Layer1_Width (*(volatile unsigned short*) 0x3000060)
 #define Layer1_Height (*(volatile unsigned short*) 0x3000062)
 
-#define Layer2_DecompressedDataPointer (*(volatile unsigned int*) 0x3000064)
+#define Layer2_DecompressedDataPointer (*(volatile unsigned short**) 0x3000064)
 #define Layer2_Width (*(volatile unsigned short*) 0x3000068)
 #define Layer2_Height (*(volatile unsigned short*) 0x300006a)
 
