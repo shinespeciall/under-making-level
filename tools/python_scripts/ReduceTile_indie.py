@@ -20,7 +20,7 @@ tolerantTileDiff = 20
 # a number of noise pixels is allowed, but we need a threshold for it, better below 20
 diffPixelCount = 10
 
-init_img = Image.open("C:\\Users\\shinespeciall\\Desktop\\training_data\\python\\test_pic.png")
+init_img = Image.open("E:\\Github Repo\\under-making-level\\tools\\python_scripts\\test\\test_pic_2.png")
 width, height = init_img.size
 
 # manage mask
@@ -114,5 +114,5 @@ for t1 in range(y_tile_count * x_tile_count):
                             fill="white")
 
 # save
-img.save("C:\\Users\\shinespeciall\\Desktop\\training_data\\python\\test_pic_result.png")
-mask.save("C:\\Users\\shinespeciall\\Desktop\\training_data\\python\\test_pic_result_mask.png")
+img.save("E:\\Github Repo\\under-making-level\\tools\\python_scripts\\test\\test_pic_result.png")
+mask.save("E:\\Github Repo\\under-making-level\\tools\\python_scripts\\test\\test_pic_result_mask.png")
